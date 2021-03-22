@@ -139,7 +139,7 @@ public class ArrayList<E> extends AbstractList<E>
      *
      * @serial
      */
-    private int size;
+    private int size; // @rockychen size 代表用户实际存储可见的大小数量，并非elementData 真实数量
 
     /**
      * Constructs an empty list with the specified initial capacity.
@@ -221,7 +221,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     private static int calculateCapacity(Object[] elementData, int minCapacity) {
-        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) { //只当elementData还未添加元素时，才和初始值比较大小
             return Math.max(DEFAULT_CAPACITY, minCapacity);
         }
         return minCapacity;
