@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2019, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
  *
@@ -30,6 +30,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
 import java.net.URL;
+
+import jdk.internal.event.EventHelper;
 import sun.security.util.Debug;
 import sun.security.util.PropertyExpander;
 
@@ -792,6 +794,11 @@ public final class Security {
         check("setProperty."+key);
         props.put(key, datum);
         invalidateSMCache(key);  /* See below. */
+
+        // JFR code instrumentation may occur here
+        if (EventHelper.isLoggingSecurity()) {
+            EventHelper.logSecurityPropertyEvent(key, datum);
+        }
     }
 
     /*

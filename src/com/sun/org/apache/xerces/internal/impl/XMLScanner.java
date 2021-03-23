@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2016, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2020, Oracle and/or its affiliates. All rights reserved.
  */
 
 /*
@@ -1240,10 +1240,10 @@ public abstract class XMLScanner
      * @throws XNIException Thrown by handler to signal an error.
      */
     public void endEntity(String name, Augmentations augs) throws IOException, XNIException {
-
         // keep track of the entity depth
-        fEntityDepth--;
-
+        if (fEntityDepth > 0) {
+            fEntityDepth--;
+        }
     } // endEntity(String)
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
  *
@@ -531,8 +531,13 @@ public class BasicRadioButtonUI extends BasicToggleButtonUI
                 }
                 if (newSelectedBtn != null &&
                     (newSelectedBtn != activeBtn)) {
+                    ButtonModel btnModel = newSelectedBtn.getModel();
+                    btnModel.setPressed(true);
+                    btnModel.setArmed(true);
                     newSelectedBtn.requestFocusInWindow();
                     newSelectedBtn.setSelected(true);
+                    btnModel.setPressed(false);
+                    btnModel.setArmed(false);
                 }
             }
         }

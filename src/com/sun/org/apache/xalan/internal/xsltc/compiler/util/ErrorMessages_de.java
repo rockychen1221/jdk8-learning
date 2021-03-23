@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 /*
@@ -167,7 +167,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * mentioned in the substitution text is not well-formed syntactically.
          */
         {ErrorMsg.INVALID_URI_ERR,
-        "Ung\u00FCltiger URI \"{0}\"."},
+        "Ung\u00FCltige URI \"{0}\"."},
 
         /*
          * Note to translators:  The file or URI named in the substitution text

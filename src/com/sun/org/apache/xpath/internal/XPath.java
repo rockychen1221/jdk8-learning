@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
  */
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,9 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id: XPath.java,v 1.2.4.1 2005/09/15 01:41:57 jeffsuttor Exp $
- */
+
 package com.sun.org.apache.xpath.internal;
 
 import java.io.Serializable;
@@ -181,10 +179,12 @@ public class XPath implements Serializable, ExpressionOwner
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
-      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
+      throw new RuntimeException(XSLMessages.createXPATHMessage(
+              XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE,
+              new Object[]{Integer.toString(type)}));
 
     // System.out.println("----------------");
-    Expression expr = compiler.compile(0);
+    Expression expr = compiler.compileExpression(0);
 
     // System.out.println("expr: "+expr);
     this.setExpression(expr);
@@ -236,7 +236,7 @@ public class XPath implements Serializable, ExpressionOwner
             //"Can not deal with XPath type: " + type);
 
     // System.out.println("----------------");
-    Expression expr = compiler.compile(0);
+    Expression expr = compiler.compileExpression(0);
 
     // System.out.println("expr: "+expr);
     this.setExpression(expr);

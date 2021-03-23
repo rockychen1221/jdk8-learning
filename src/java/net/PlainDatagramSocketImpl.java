@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Collections;
 import jdk.net.*;
-import static sun.net.ExtendedOptionsImpl.*;
 
 /*
  * On Unix systems we simply delegate to native methods.
@@ -41,32 +40,6 @@ class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
 {
     static {
         init();
-    }
-
-    protected <T> void setOption(SocketOption<T> name, T value) throws IOException {
-        if (!name.equals(ExtendedSocketOptions.SO_FLOW_SLA)) {
-            super.setOption(name, value);
-        } else {
-            if (isClosed()) {
-                throw new SocketException("Socket closed");
-            }
-            checkSetOptionPermission(name);
-            checkValueType(value, SocketFlow.class);
-            setFlowOption(getFileDescriptor(), (SocketFlow)value);
-        }
-    }
-
-    protected <T> T getOption(SocketOption<T> name) throws IOException {
-        if (!name.equals(ExtendedSocketOptions.SO_FLOW_SLA)) {
-            return super.getOption(name);
-        }
-        if (isClosed()) {
-            throw new SocketException("Socket closed");
-        }
-        checkGetOptionPermission(name);
-        SocketFlow flow = SocketFlow.create();
-        getFlowOption(getFileDescriptor(), flow);
-        return (T)flow;
     }
 
     protected void socketSetOption(int opt, Object val) throws SocketException {

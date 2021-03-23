@@ -1,174 +1,155 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package com.sun.org.apache.bcel.internal.classfile;
-
-/* ====================================================================
- * The Apache Software License, Version 1.1
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
- * reserved.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *       "This product includes software developed by the
- *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowledgment may appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
- *
- * 4. The names "Apache" and "Apache Software Foundation" and
- *    "Apache BCEL" must not be used to endorse or promote products
- *    derived from this software without prior written permission. For
- *    written permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache",
- *    "Apache BCEL", nor may "Apache" appear in their name, without
- *    prior written permission of the Apache Software Foundation.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation.  For more
- * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-import  com.sun.org.apache.bcel.internal.Constants;
-import  java.io.*;
+package com.sun.org.apache.bcel.internal.classfile;
+
+import java.io.DataInput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import com.sun.org.apache.bcel.internal.Const;
 
 /**
- * This class is derived from the abstract
- * <A HREF="com.sun.org.apache.bcel.internal.classfile.Constant.html">Constant</A> class
+ * This class is derived from the abstract {@link Constant}
  * and represents a reference to the name and signature
  * of a field or method.
  *
- * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @version $Id$
  * @see     Constant
  */
 public final class ConstantNameAndType extends Constant {
-  private int name_index;      // Name of field/method
-  private int signature_index; // and its signature.
 
-  /**
-   * Initialize from another object.
-   */
-  public ConstantNameAndType(ConstantNameAndType c) {
-    this(c.getNameIndex(), c.getSignatureIndex());
-  }
+    private int name_index; // Name of field/method
+    private int signature_index; // and its signature.
 
-  /**
-   * Initialize instance from file data.
-   *
-   * @param file Input stream
-   * @throws IOException
-   */
-  ConstantNameAndType(DataInputStream file) throws IOException
-  {
-    this((int)file.readUnsignedShort(), (int)file.readUnsignedShort());
-  }
 
-  /**
-   * @param name_index Name of field/method
-   * @param signature_index and its signature
-   */
-  public ConstantNameAndType(int name_index,
-                             int signature_index)
-  {
-    super(Constants.CONSTANT_NameAndType);
-    this.name_index      = name_index;
-    this.signature_index = signature_index;
-  }
+    /**
+     * Initialize from another object.
+     */
+    public ConstantNameAndType(final ConstantNameAndType c) {
+        this(c.getNameIndex(), c.getSignatureIndex());
+    }
 
-  /**
-   * Called by objects that are traversing the nodes of the tree implicitely
-   * defined by the contents of a Java class. I.e., the hierarchy of methods,
-   * fields, attributes, etc. spawns a tree of objects.
-   *
-   * @param v Visitor object
-   */
-  public void accept(Visitor v) {
-    v.visitConstantNameAndType(this);
-  }
 
-  /**
-   * Dump name and signature index to file stream in binary format.
-   *
-   * @param file Output file stream
-   * @throws IOException
-   */
-  public final void dump(DataOutputStream file) throws IOException
-  {
-    file.writeByte(tag);
-    file.writeShort(name_index);
-    file.writeShort(signature_index);
-  }
+    /**
+     * Initialize instance from file data.
+     *
+     * @param file Input stream
+     * @throws IOException
+     */
+    ConstantNameAndType(final DataInput file) throws IOException {
+        this(file.readUnsignedShort(), file.readUnsignedShort());
+    }
 
-  /**
-   * @return Name index in constant pool of field/method name.
-   */
-  public final int getNameIndex()      { return name_index; }
 
-  /** @return name
-   */
-  public final String getName(ConstantPool cp) {
-    return cp.constantToString(getNameIndex(), Constants.CONSTANT_Utf8);
-  }
+    /**
+     * @param name_index Name of field/method
+     * @param signature_index and its signature
+     */
+    public ConstantNameAndType(final int name_index, final int signature_index) {
+        super(Const.CONSTANT_NameAndType);
+        this.name_index = name_index;
+        this.signature_index = signature_index;
+    }
 
-  /**
-   * @return Index in constant pool of field/method signature.
-   */
-  public final int getSignatureIndex() { return signature_index; }
 
-  /** @return signature
-   */
-  public final String getSignature(ConstantPool cp) {
-    return cp.constantToString(getSignatureIndex(), Constants.CONSTANT_Utf8);
-  }
+    /**
+     * Called by objects that are traversing the nodes of the tree implicitely
+     * defined by the contents of a Java class. I.e., the hierarchy of methods,
+     * fields, attributes, etc. spawns a tree of objects.
+     *
+     * @param v Visitor object
+     */
+    @Override
+    public void accept( final Visitor v ) {
+        v.visitConstantNameAndType(this);
+    }
 
-  /**
-   * @param name_index.
-   */
-  public final void setNameIndex(int name_index) {
-    this.name_index = name_index;
-  }
 
-  /**
-   * @param signature_index.
-   */
-  public final void setSignatureIndex(int signature_index) {
-    this.signature_index = signature_index;
-  }
+    /**
+     * Dump name and signature index to file stream in binary format.
+     *
+     * @param file Output file stream
+     * @throws IOException
+     */
+    @Override
+    public final void dump( final DataOutputStream file ) throws IOException {
+        file.writeByte(super.getTag());
+        file.writeShort(name_index);
+        file.writeShort(signature_index);
+    }
 
-  /**
-   * @return String representation
-   */
-  public final String toString() {
-    return super.toString() + "(name_index = " + name_index +
-      ", signature_index = " + signature_index + ")";
-  }
+
+    /**
+     * @return Name index in constant pool of field/method name.
+     */
+    public final int getNameIndex() {
+        return name_index;
+    }
+
+
+    /** @return name
+     */
+    public final String getName( final ConstantPool cp ) {
+        return cp.constantToString(getNameIndex(), Const.CONSTANT_Utf8);
+    }
+
+
+    /**
+     * @return Index in constant pool of field/method signature.
+     */
+    public final int getSignatureIndex() {
+        return signature_index;
+    }
+
+
+    /** @return signature
+     */
+    public final String getSignature( final ConstantPool cp ) {
+        return cp.constantToString(getSignatureIndex(), Const.CONSTANT_Utf8);
+    }
+
+
+    /**
+     * @param name_index the name index of this constant
+     */
+    public final void setNameIndex( final int name_index ) {
+        this.name_index = name_index;
+    }
+
+
+    /**
+     * @param signature_index the signature index in the constant pool of this type
+     */
+    public final void setSignatureIndex( final int signature_index ) {
+        this.signature_index = signature_index;
+    }
+
+
+    /**
+     * @return String representation
+     */
+    @Override
+    public final String toString() {
+        return super.toString() + "(name_index = " + name_index + ", signature_index = "
+                + signature_index + ")";
+    }
 }

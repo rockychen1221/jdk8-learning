@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2002, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
  *
@@ -67,5 +67,9 @@ class JavaUtilJarAccessImpl implements JavaUtilJarAccess {
 
     public void ensureInitialization(JarFile jar) {
         jar.ensureInitialization();
+    }
+
+    public boolean isInitializing() {
+        return JarFile.isInitializing();
     }
 }

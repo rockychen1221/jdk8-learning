@@ -31,8 +31,6 @@ import java.util.HashSet;
 import java.util.Collections;
 import jdk.net.*;
 
-import static sun.net.ExtendedOptionsImpl.*;
-
 /*
  * On Unix systems we simply delegate to native methods.
  *
@@ -48,39 +46,8 @@ class PlainSocketImpl extends AbstractPlainSocketImpl
     /**
      * Constructs an empty instance.
      */
-    PlainSocketImpl() { }
-
-    /**
-     * Constructs an instance with the given file descriptor.
-     */
-    PlainSocketImpl(FileDescriptor fd) {
-        this.fd = fd;
-    }
-
-    protected <T> void setOption(SocketOption<T> name, T value) throws IOException {
-        if (!name.equals(ExtendedSocketOptions.SO_FLOW_SLA)) {
-            super.setOption(name, value);
-        } else {
-            if (isClosedOrPending()) {
-                throw new SocketException("Socket closed");
-            }
-            checkSetOptionPermission(name);
-            checkValueType(value, SocketFlow.class);
-            setFlowOption(getFileDescriptor(), (SocketFlow)value);
-        }
-    }
-
-    protected <T> T getOption(SocketOption<T> name) throws IOException {
-        if (!name.equals(ExtendedSocketOptions.SO_FLOW_SLA)) {
-            return super.getOption(name);
-        }
-        if (isClosedOrPending()) {
-            throw new SocketException("Socket closed");
-        }
-        checkGetOptionPermission(name);
-        SocketFlow flow = SocketFlow.create();
-        getFlowOption(getFileDescriptor(), flow);
-        return (T)flow;
+    PlainSocketImpl(boolean isServer) {
+        super(isServer);
     }
 
     protected void socketSetOption(int opt, boolean b, Object val) throws SocketException {

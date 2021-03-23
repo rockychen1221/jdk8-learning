@@ -288,7 +288,7 @@ class ZoneName {
         "America/St_Barthelemy", "Atlantic", "America/Halifax",
         "Asia/Pontianak", "Indonesia_Western", "Asia/Jakarta",
         "Africa/Lusaka", "Africa_Central", "Africa/Maputo",
-        "America/Godthab", "Greenland_Western", "America/Godthab",
+        "America/Nuuk", "Greenland_Western", "America/Godthab",
         "Asia/Dhaka", "Bangladesh", "Asia/Dhaka",
         "Asia/Dubai", "Gulf", "Asia/Dubai",
         "Europe/Moscow", "Moscow", "Europe/Moscow",
@@ -684,7 +684,6 @@ class ZoneName {
         "Africa/Timbuktu", "Africa/Bamako",
         "America/Buenos_Aires", "America/Argentina/Buenos_Aires",
         "Canada/Pacific", "America/Vancouver",
-        "US/Pacific-New", "America/Los_Angeles",
         "Mexico/BajaNorte", "America/Tijuana",
         "Europe/Guernsey", "Europe/London",
         "Asia/Tel_Aviv", "Asia/Jerusalem",
@@ -768,6 +767,7 @@ class ZoneName {
         "Europe/Belfast", "Europe/London",
         "America/Kralendijk", "America/Curacao",
         "Asia/Rangoon", "Asia/Yangon",
+        "America/Godthab", "America/Nuuk",
     };
 
     private static final Map<String, String> zidToMzone = new HashMap<>();

@@ -2,18 +2,12 @@
  * Copyright (c) 2017, Oracle and/or its affiliates. All rights reserved.
  */
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
-// ResolvingXMLReader.java - An XMLReader that performs catalog resolution
-
-/*
- * Copyright 2001-2004 The Apache Software Foundation or its licensors,
- * as applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -26,7 +20,6 @@
 
 package com.sun.org.apache.xml.internal.resolver.tools;
 
-import org.xml.sax.*;
 
 import javax.xml.parsers.*;
 
@@ -51,10 +44,10 @@ import jdk.xml.internal.JdkXmlUtils;
  */
 public class ResolvingXMLReader extends ResolvingXMLFilter {
   /** Make the parser Namespace aware? */
-  public static boolean namespaceAware = true;
+  private static final boolean namespaceAware = true;
 
   /** Make the parser validating? */
-  public static boolean validating = false;
+  private static final boolean validating = false;
 
   /**
    * Construct a new reader from the JAXP factory.

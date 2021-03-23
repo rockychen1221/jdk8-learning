@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, 2017, Oracle and/or its affiliates. All rights reserved.
  */
 /*
  * Copyright 2001-2004 The Apache Software Foundation.
@@ -54,6 +54,7 @@ import org.xml.sax.XMLReader;
 /**
  * @author Santiago Pericas-Geertsen
  */
+@SuppressWarnings("deprecation") //org.xml.sax.helpers.XMLReaderFactory
 public final class Util {
     private static final String property = "org.xml.sax.driver";
 

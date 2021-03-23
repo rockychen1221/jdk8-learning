@@ -1,138 +1,180 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * Copyright (c) 2017, 2019, Oracle and/or its affiliates. All rights reserved.
+ */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.sun.org.apache.bcel.internal.generic;
-import com.sun.org.apache.bcel.internal.Constants;
 
-/* ====================================================================
- * The Apache Software License, Version 1.1
- *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *       "This product includes software developed by the
- *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowledgment may appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
- *
- * 4. The names "Apache" and "Apache Software Foundation" and
- *    "Apache BCEL" must not be used to endorse or promote products
- *    derived from this software without prior written permission. For
- *    written permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache",
- *    "Apache BCEL", nor may "Apache" appear in their name, without
- *    prior written permission of the Apache Software Foundation.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation.  For more
- * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
- */
-
-import com.sun.org.apache.bcel.internal.classfile.*;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.sun.org.apache.bcel.internal.Const;
+import com.sun.org.apache.bcel.internal.classfile.AccessFlags;
+import com.sun.org.apache.bcel.internal.classfile.Attribute;
 
 /**
  * Super class for FieldGen and MethodGen objects, since they have
  * some methods in common!
  *
- * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @version $Id$
+ * @LastModified: Jun 2019
  */
-public abstract class FieldGenOrMethodGen extends AccessFlags
-  implements NamedAndTyped, Cloneable
-{
-  protected String          name;
-  protected Type            type;
-  protected ConstantPoolGen cp;
-  private   ArrayList       attribute_vec = new ArrayList();
+public abstract class FieldGenOrMethodGen extends AccessFlags implements NamedAndTyped, Cloneable {
 
-  protected FieldGenOrMethodGen() {}
+    private String name;
+    private Type type;
+    private ConstantPoolGen cp;
 
-  public void            setType(Type type)   {
-    if(type.getType() == Constants.T_ADDRESS)
-      throw new IllegalArgumentException("Type can not be " + type);
+    private final List<Attribute> attribute_vec = new ArrayList<>();
 
-    this.type = type;
-  }
-  public Type            getType()            { return type; }
+    // @since 6.0
+    private final List<AnnotationEntryGen>       annotation_vec= new ArrayList<>();
 
-  /** @return name of method/field.
-   */
-  public String          getName()            { return name; }
-  public void            setName(String name) { this.name = name; }
 
-  public ConstantPoolGen getConstantPool()                   { return cp; }
-  public void            setConstantPool(ConstantPoolGen cp) { this.cp = cp; }
-
-  /**
-   * Add an attribute to this method. Currently, the JVM knows about
-   * the `Code', `ConstantValue', `Synthetic' and `Exceptions'
-   * attributes. Other attributes will be ignored by the JVM but do no
-   * harm.
-   *
-   * @param a attribute to be added
-   */
-  public void addAttribute(Attribute a) { attribute_vec.add(a); }
-
-  /**
-   * Remove an attribute.
-   */
-  public void removeAttribute(Attribute a) { attribute_vec.remove(a); }
-
-  /**
-   * Remove all attributes.
-   */
-  public void removeAttributes() { attribute_vec.clear(); }
-
-  /**
-   * @return all attributes of this method.
-   */
-  public Attribute[] getAttributes() {
-    Attribute[] attributes = new Attribute[attribute_vec.size()];
-    attribute_vec.toArray(attributes);
-    return attributes;
-  }
-
-  /** @return signature of method/field.
-   */
-  public abstract String  getSignature();
-
-  public Object clone() {
-    try {
-      return super.clone();
-    } catch(CloneNotSupportedException e) {
-      System.err.println(e);
-      return null;
+    protected FieldGenOrMethodGen() {
     }
-  }
+
+
+    /**
+     * @since 6.0
+     */
+    protected FieldGenOrMethodGen(final int access_flags) { // TODO could this be package protected?
+        super(access_flags);
+    }
+
+    @Override
+    public void setType( final Type type ) { // TODO could be package-protected?
+        if (type.getType() == Const.T_ADDRESS) {
+            throw new IllegalArgumentException("Type can not be " + type);
+        }
+        this.type = type;
+    }
+
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+
+    /** @return name of method/field.
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+
+    @Override
+    public void setName( final String name ) { // TODO could be package-protected?
+        this.name = name;
+    }
+
+
+    public ConstantPoolGen getConstantPool() {
+        return cp;
+    }
+
+
+    public void setConstantPool( final ConstantPoolGen cp ) { // TODO could be package-protected?
+        this.cp = cp;
+    }
+
+
+    /**
+     * Add an attribute to this method. Currently, the JVM knows about
+     * the `Code', `ConstantValue', `Synthetic' and `Exceptions'
+     * attributes. Other attributes will be ignored by the JVM but do no
+     * harm.
+     *
+     * @param a attribute to be added
+     */
+    public void addAttribute( final Attribute a ) {
+        attribute_vec.add(a);
+    }
+
+    /**
+     * @since 6.0
+     */
+    protected void addAnnotationEntry(final AnnotationEntryGen ag) // TODO could this be package protected?
+    {
+        annotation_vec.add(ag);
+    }
+
+
+    /**
+     * Remove an attribute.
+     */
+    public void removeAttribute( final Attribute a ) {
+        attribute_vec.remove(a);
+    }
+
+    /**
+     * @since 6.0
+     */
+    protected void removeAnnotationEntry(final AnnotationEntryGen ag) // TODO could this be package protected?
+    {
+        annotation_vec.remove(ag);
+    }
+
+
+    /**
+     * Remove all attributes.
+     */
+    public void removeAttributes() {
+        attribute_vec.clear();
+    }
+
+    /**
+     * @since 6.0
+     */
+    protected void removeAnnotationEntries() // TODO could this be package protected?
+    {
+        annotation_vec.clear();
+    }
+
+
+    /**
+     * @return all attributes of this method.
+     */
+    public Attribute[] getAttributes() {
+        final Attribute[] attributes = new Attribute[attribute_vec.size()];
+        attribute_vec.toArray(attributes);
+        return attributes;
+    }
+
+    public AnnotationEntryGen[] getAnnotationEntries() {
+        final AnnotationEntryGen[] annotations = new AnnotationEntryGen[annotation_vec.size()];
+          annotation_vec.toArray(annotations);
+          return annotations;
+      }
+
+
+    /** @return signature of method/field.
+     */
+    public abstract String getSignature();
+
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new Error("Clone Not Supported"); // never happens
+        }
+    }
 }

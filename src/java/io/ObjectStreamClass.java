@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
  *
@@ -864,6 +864,17 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
+     * Throws InvalidClassException if not initialized.
+     * To be called in cases where an uninitialized class descriptor indicates
+     * a problem in the serialization stream.
+     */
+    final void checkInitialized() throws InvalidClassException {
+        if (!initialized) {
+            throw new InvalidClassException("Class descriptor should be initialized");
+        }
+    }
+
+    /**
      * Throws an InvalidClassException if object instances referencing this
      * class descriptor should not be allowed to deserialize.  This method does
      * not apply to deserialization of enum constants.
@@ -1119,6 +1130,10 @@ public class ObjectStreamClass implements Serializable {
             } catch (IllegalAccessException ex) {
                 // should not occur, as access checks have been suppressed
                 throw new InternalError(ex);
+            } catch (InstantiationError err) {
+                InstantiationException ex = new InstantiationException();
+                ex.initCause(err);
+                throw ex;
             }
         } else {
             throw new UnsupportedOperationException();
@@ -2371,7 +2386,7 @@ public class ObjectStreamClass implements Serializable {
      */
     private static class FieldReflectorKey extends WeakReference<Class<?>> {
 
-        private final String sigs;
+        private final String[] sigs;
         private final int hash;
         private final boolean nullClass;
 
@@ -2380,13 +2395,13 @@ public class ObjectStreamClass implements Serializable {
         {
             super(cl, queue);
             nullClass = (cl == null);
-            StringBuilder sbuf = new StringBuilder();
-            for (int i = 0; i < fields.length; i++) {
+            sigs = new String[2 * fields.length];
+            for (int i = 0, j = 0; i < fields.length; i++) {
                 ObjectStreamField f = fields[i];
-                sbuf.append(f.getName()).append(f.getSignature());
+                sigs[j++] = f.getName();
+                sigs[j++] = f.getSignature();
             }
-            sigs = sbuf.toString();
-            hash = System.identityHashCode(cl) + sigs.hashCode();
+            hash = System.identityHashCode(cl) + Arrays.hashCode(sigs);
         }
 
         public int hashCode() {
@@ -2404,7 +2419,7 @@ public class ObjectStreamClass implements Serializable {
                 return (nullClass ? other.nullClass
                                   : ((referent = get()) != null) &&
                                     (referent == other.get())) &&
-                    sigs.equals(other.sigs);
+                        Arrays.equals(sigs, other.sigs);
             } else {
                 return false;
             }

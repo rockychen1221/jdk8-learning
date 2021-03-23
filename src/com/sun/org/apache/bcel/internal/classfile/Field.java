@@ -1,168 +1,204 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.sun.org.apache.bcel.internal.classfile;
 
-/* ====================================================================
- * The Apache Software License, Version 1.1
- *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *       "This product includes software developed by the
- *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowledgment may appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
- *
- * 4. The names "Apache" and "Apache Software Foundation" and
- *    "Apache BCEL" must not be used to endorse or promote products
- *    derived from this software without prior written permission. For
- *    written permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache",
- *    "Apache BCEL", nor may "Apache" appear in their name, without
- *    prior written permission of the Apache Software Foundation.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation.  For more
- * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
- */
-import  com.sun.org.apache.bcel.internal.Constants;
+import java.io.DataInput;
+import java.io.IOException;
+import java.util.Objects;
+
+import com.sun.org.apache.bcel.internal.Const;
 import com.sun.org.apache.bcel.internal.generic.Type;
-import java.io.*;
+import com.sun.org.apache.bcel.internal.util.BCELComparator;
 
 /**
  * This class represents the field info structure, i.e., the representation
  * for a variable in the class. See JVM specification for details.
  *
- * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @version $Id$
  */
 public final class Field extends FieldOrMethod {
-  /**
-   * Initialize from another object. Note that both objects use the same
-   * references (shallow copy). Use clone() for a physical copy.
-   */
-  public Field(Field c) {
-    super(c);
-  }
 
-  /**
-   * Construct object from file stream.
-   * @param file Input stream
-   */
-  Field(DataInputStream file, ConstantPool constant_pool)
-       throws IOException, ClassFormatException
-  {
-    super(file, constant_pool);
-  }
+    private static BCELComparator bcelComparator = new BCELComparator() {
 
-  /**
-   * @param access_flags Access rights of field
-   * @param name_index Points to field name in constant pool
-   * @param signature_index Points to encoded signature
-   * @param attributes Collection of attributes
-   * @param constant_pool Array of constants
-   */
-  public Field(int access_flags, int name_index, int signature_index,
-               Attribute[] attributes, ConstantPool constant_pool)
-  {
-    super(access_flags, name_index, signature_index, attributes, constant_pool);
-  }
+        @Override
+        public boolean equals( final Object o1, final Object o2 ) {
+            final Field THIS = (Field) o1;
+            final Field THAT = (Field) o2;
+            return Objects.equals(THIS.getName(), THAT.getName())
+                    && Objects.equals(THIS.getSignature(), THAT.getSignature());
+        }
 
-  /**
-   * Called by objects that are traversing the nodes of the tree implicitely
-   * defined by the contents of a Java class. I.e., the hierarchy of methods,
-   * fields, attributes, etc. spawns a tree of objects.
-   *
-   * @param v Visitor object
-   */
-  public void accept(Visitor v) {
-    v.visitField(this);
-  }
 
-  /**
-   * @return constant value associated with this field (may be null)
-   */
-  public final ConstantValue getConstantValue() {
-    for(int i=0; i < attributes_count; i++)
-      if(attributes[i].getTag() == Constants.ATTR_CONSTANT_VALUE)
-        return (ConstantValue)attributes[i];
+        @Override
+        public int hashCode( final Object o ) {
+            final Field THIS = (Field) o;
+            return THIS.getSignature().hashCode() ^ THIS.getName().hashCode();
+        }
+    };
 
-    return null;
-  }
 
-  /**
-   * Return string representation close to declaration format,
-   * `public static final short MAX = 100', e.g..
-   *
-   * @return String representation of field, including the signature.
-   */
-  public final String toString() {
-    String name, signature, access; // Short cuts to constant pool
-
-    // Get names from constant pool
-    access    = Utility.accessToString(access_flags);
-    access    = access.equals("")? "" : (access + " ");
-    signature = Utility.signatureToString(getSignature());
-    name      = getName();
-
-    StringBuffer  buf = new StringBuffer(access + signature + " " + name);
-    ConstantValue cv  = getConstantValue();
-
-    if(cv != null)
-      buf.append(" = " + cv);
-
-    for(int i=0; i < attributes_count; i++) {
-      Attribute a = attributes[i];
-
-      if(!(a instanceof ConstantValue))
-        buf.append(" [" + a.toString() + "]");
+    /**
+     * Initialize from another object. Note that both objects use the same
+     * references (shallow copy). Use clone() for a physical copy.
+     */
+    public Field(final Field c) {
+        super(c);
     }
 
-    return buf.toString();
-  }
 
-  /**
-   * @return deep copy of this field
-   */
-  public final Field copy(ConstantPool constant_pool) {
-    return (Field)copy_(constant_pool);
-  }
+    /**
+     * Construct object from file stream.
+     * @param file Input stream
+     */
+    Field(final DataInput file, final ConstantPool constant_pool) throws IOException,
+            ClassFormatException {
+        super(file, constant_pool);
+    }
 
-  /**
-   * @return type of field
-   */
-  public Type getType() {
-    return Type.getReturnType(getSignature());
-  }
+
+    /**
+     * @param access_flags Access rights of field
+     * @param name_index Points to field name in constant pool
+     * @param signature_index Points to encoded signature
+     * @param attributes Collection of attributes
+     * @param constant_pool Array of constants
+     */
+    public Field(final int access_flags, final int name_index, final int signature_index, final Attribute[] attributes,
+            final ConstantPool constant_pool) {
+        super(access_flags, name_index, signature_index, attributes, constant_pool);
+    }
+
+
+    /**
+     * Called by objects that are traversing the nodes of the tree implicitely
+     * defined by the contents of a Java class. I.e., the hierarchy of methods,
+     * fields, attributes, etc. spawns a tree of objects.
+     *
+     * @param v Visitor object
+     */
+    @Override
+    public void accept( final Visitor v ) {
+        v.visitField(this);
+    }
+
+
+    /**
+     * @return constant value associated with this field (may be null)
+     */
+    public final ConstantValue getConstantValue() {
+        for (final Attribute attribute : super.getAttributes()) {
+            if (attribute.getTag() == Const.ATTR_CONSTANT_VALUE) {
+                return (ConstantValue) attribute;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Return string representation close to declaration format,
+     * `public static final short MAX = 100', e.g..
+     *
+     * @return String representation of field, including the signature.
+     */
+    @Override
+    public final String toString() {
+        String name;
+        String signature;
+        String access; // Short cuts to constant pool
+
+        // Get names from constant pool
+        access = Utility.accessToString(super.getAccessFlags());
+        access = access.isEmpty() ? "" : (access + " ");
+        signature = Utility.signatureToString(getSignature());
+        name = getName();
+        final StringBuilder buf = new StringBuilder(64); // CHECKSTYLE IGNORE MagicNumber
+        buf.append(access).append(signature).append(" ").append(name);
+        final ConstantValue cv = getConstantValue();
+        if (cv != null) {
+            buf.append(" = ").append(cv);
+        }
+        for (final Attribute attribute : super.getAttributes()) {
+            if (!(attribute instanceof ConstantValue)) {
+                buf.append(" [").append(attribute).append("]");
+            }
+        }
+        return buf.toString();
+    }
+
+
+    /**
+     * @return deep copy of this field
+     */
+    public final Field copy( final ConstantPool _constant_pool ) {
+        return (Field) copy_(_constant_pool);
+    }
+
+
+    /**
+     * @return type of field
+     */
+    public Type getType() {
+        return Type.getReturnType(getSignature());
+    }
+
+
+    /**
+     * @return Comparison strategy object
+     */
+    public static BCELComparator getComparator() {
+        return bcelComparator;
+    }
+
+
+    /**
+     * @param comparator Comparison strategy object
+     */
+    public static void setComparator( final BCELComparator comparator ) {
+        bcelComparator = comparator;
+    }
+
+
+    /**
+     * Return value as defined by given BCELComparator strategy.
+     * By default two Field objects are said to be equal when
+     * their names and signatures are equal.
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals( final Object obj ) {
+        return bcelComparator.equals(this, obj);
+    }
+
+
+    /**
+     * Return value as defined by given BCELComparator strategy.
+     * By default return the hashcode of the field's name XOR signature.
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return bcelComparator.hashCode(this);
+    }
 }

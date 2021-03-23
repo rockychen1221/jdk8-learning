@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 /**
@@ -48,7 +48,7 @@ public class TransformC14NExclusive extends TransformSpi {
     /**
      * Method engineGetURI
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected String engineGetURI() {
         return implementedTransformURI;
@@ -79,18 +79,20 @@ public class TransformC14NExclusive extends TransformSpi {
 
             Canonicalizer20010315ExclOmitComments c14n =
                 new Canonicalizer20010315ExclOmitComments();
+            c14n.setSecureValidation(secureValidation);
             if (os != null) {
                 c14n.setWriter(os);
             }
             byte[] result = c14n.engineCanonicalize(input, inclusiveNamespaces);
 
             XMLSignatureInput output = new XMLSignatureInput(result);
+            output.setSecureValidation(secureValidation);
             if (os != null) {
                 output.setOutputStream(os);
             }
             return output;
         } catch (XMLSecurityException ex) {
-            throw new CanonicalizationException("empty", ex);
+            throw new CanonicalizationException(ex);
         }
     }
 }

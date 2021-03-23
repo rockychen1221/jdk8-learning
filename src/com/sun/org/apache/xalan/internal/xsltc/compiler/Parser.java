@@ -935,7 +935,7 @@ public class Parser implements Constants, ContentHandler {
         if (className != null) {
             try {
                 final Class<?> clazz = ObjectFactory.findProviderClass(className, true);
-                node = (SyntaxTreeNode)clazz.newInstance();
+                node = (SyntaxTreeNode)clazz.getDeclaredConstructor().newInstance();
                 node.setQName(qname);
                 node.setParser(this);
                 if (_locator != null) {

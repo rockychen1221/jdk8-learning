@@ -28,7 +28,7 @@ public final class gtk_zh_HK extends ListResourceBundle {
             { "FileChooser.saveButtonToolTip.textAndMnemonic", "\u5132\u5B58\u9078\u53D6\u7684\u6A94\u6848\u3002" },
             { "FileChooser.saveDialogTitle.textAndMnemonic", "\u5132\u5B58" },
             { "GTKColorChooserPanel.blue.textAndMnemonic", "\u85CD(&B):" },
-            { "GTKColorChooserPanel.color.textAndMnemonic", "\u984F\u8272\u540D\u7A31(&N):" },
+            { "GTKColorChooserPanel.color.textAndMnemonic", "\u8272\u5F69\u540D\u7A31(&N):" },
             { "GTKColorChooserPanel.green.textAndMnemonic", "\u7DA0(&G):" },
             { "GTKColorChooserPanel.hue.textAndMnemonic", "\u8272\u8ABF(&H):" },
             { "GTKColorChooserPanel.red.textAndMnemonic", "\u7D05(&E):" },

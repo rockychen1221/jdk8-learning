@@ -136,10 +136,10 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * The size of the ArrayList (the number of elements it contains).
-     *
+     * @rockychen size 代表用户实际存储可见的大小数量，并非elementData 真实数量
      * @serial
      */
-    private int size; // @rockychen size 代表用户实际存储可见的大小数量，并非elementData 真实数量
+    private int size;
 
     /**
      * Constructs an empty list with the specified initial capacity.
@@ -175,14 +175,16 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws NullPointerException if the specified collection is null
      */
     public ArrayList(Collection<? extends E> c) {
-        elementData = c.toArray();
-        if ((size = elementData.length) != 0) {
-            // c.toArray might (incorrectly) not return Object[] (see 6260652)
-            if (elementData.getClass() != Object[].class)
-                elementData = Arrays.copyOf(elementData, size, Object[].class);
+        Object[] a = c.toArray();
+        if ((size = a.length) != 0) {
+            if (c.getClass() == ArrayList.class) {
+                elementData = a;
+            } else {
+                elementData = Arrays.copyOf(a, size, Object[].class);
+            }
         } else {
             // replace with empty array.
-            this.elementData = EMPTY_ELEMENTDATA;
+            elementData = EMPTY_ELEMENTDATA;
         }
     }
 
@@ -221,7 +223,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     private static int calculateCapacity(Object[] elementData, int minCapacity) {
-        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) { //只当elementData还未添加元素时，才和初始值比较大小
+        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) { // 只当elementData还未添加元素时，才和初始值比较大小
             return Math.max(DEFAULT_CAPACITY, minCapacity);
         }
         return minCapacity;

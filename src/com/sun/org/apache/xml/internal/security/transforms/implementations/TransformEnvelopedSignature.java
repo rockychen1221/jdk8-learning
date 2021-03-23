@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2020, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 /**
@@ -36,10 +36,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Implements the <CODE>http://www.w3.org/2000/09/xmldsig#enveloped-signature</CODE>
+ * Implements the {@code http://www.w3.org/2000/09/xmldsig#enveloped-signature}
  * transform.
  *
- * @author Christian Geuer-Pollmann
  */
 public class TransformEnvelopedSignature extends TransformSpi {
 
@@ -50,14 +49,14 @@ public class TransformEnvelopedSignature extends TransformSpi {
     /**
      * Method engineGetURI
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected String engineGetURI() {
         return implementedTransformURI;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected XMLSignatureInput enginePerformTransform(
         XMLSignatureInput input, OutputStream os, Transform transformObject
@@ -136,7 +135,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
                 return -1;
             }
             return 1;
-            //return !XMLUtils.isDescendantOrSelf(exclude,n);
+            //return !XMLUtils.isDescendantOrSelf(exclude, n);
         }
     }
 }

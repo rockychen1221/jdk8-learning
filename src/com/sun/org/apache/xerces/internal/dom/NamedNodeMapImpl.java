@@ -2,11 +2,12 @@
  * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  */
 /*
- * Copyright 1999-2002,2004,2005 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -26,7 +27,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -79,7 +79,7 @@ public class NamedNodeMapImpl
     protected final static short HASDEFAULTS  = 0x1<<2;
 
     /** Nodes. */
-    protected List nodes;
+    protected List<Node> nodes;
 
     protected NodeImpl ownerNode; // the node this map belongs to
 
@@ -121,8 +121,7 @@ public class NamedNodeMapImpl
      * is greater than or equal to getLength().
      */
     public Node item(int index) {
-        return (nodes != null && index < nodes.size()) ?
-                    (Node)(nodes.get(index)) : null;
+        return (nodes != null && index < nodes.size()) ? (nodes.get(index)) : null;
     }
 
     /**
@@ -135,7 +134,7 @@ public class NamedNodeMapImpl
     public Node getNamedItem(String name) {
 
         int i = findNamePoint(name,0);
-        return (i < 0) ? null : (Node)(nodes.get(i));
+        return (i < 0) ? null : (nodes.get(i));
 
     } // getNamedItem(String):Node
 
@@ -153,7 +152,7 @@ public class NamedNodeMapImpl
     public Node getNamedItemNS(String namespaceURI, String localName) {
 
         int i = findNamePoint(namespaceURI, localName);
-        return (i < 0) ? null : (Node)(nodes.get(i));
+        return (i < 0) ? null : (nodes.get(i));
 
     } // getNamedItemNS(String,String):Node
 
@@ -197,7 +196,7 @@ public class NamedNodeMapImpl
         } else {
             i = -1 - i; // Insert point (may be end of list)
             if (null == nodes) {
-                nodes = new ArrayList(5);
+                nodes = new ArrayList<>(5);
             }
             nodes.add(i, arg);
         }
@@ -247,7 +246,7 @@ public class NamedNodeMapImpl
             } else {
                 i = -1 - i; // Insert point (may be end of list)
                 if (null == nodes) {
-                    nodes = new ArrayList(5);
+                    nodes = new ArrayList<>(5);
                 }
                 nodes.add(i, arg);
             }
@@ -341,7 +340,7 @@ public class NamedNodeMapImpl
             int size = srcnodes.size();
             if (size != 0) {
                 if (nodes == null) {
-                    nodes = new ArrayList(size);
+                    nodes = new ArrayList<>(size);
                 }
                 else {
                     nodes.clear();
@@ -456,7 +455,7 @@ public class NamedNodeMapImpl
 
             while (first <= last) {
                 i = (first + last) / 2;
-                int test = name.compareTo(((Node)(nodes.get(i))).getNodeName());
+                int test = name.compareTo(((nodes.get(i))).getNodeName());
                 if (test == 0) {
                     return i; // Name found
                 }
@@ -521,7 +520,7 @@ public class NamedNodeMapImpl
         if (nodes != null) {
             final int size = nodes.size();
             for (int i = 0; i < size; ++i) {
-                Node n = (Node)nodes.get(i);
+                Node n = nodes.get(i);
                 if (n==a) return true;
                 if (n==b) return false;
             }
@@ -562,7 +561,7 @@ public class NamedNodeMapImpl
             else {
                 i = -1 - i; // Insert point (may be end of list)
                 if (null == nodes) {
-                    nodes = new ArrayList(5);
+                    nodes = new ArrayList<>(5);
                 }
                 nodes.add(i, arg);
             }
@@ -576,11 +575,7 @@ public class NamedNodeMapImpl
      * @param list   ArrayList to copy information into.
      * @return A copy of this node named map
      */
-    protected ArrayList cloneMap(ArrayList list) {
-        if (list == null) {
-            list = new ArrayList(5);
-        }
-        list.clear();
+    protected List<Node> cloneMap(List<Node> list) {
         if (nodes != null) {
             final int size = nodes.size();
             for (int i = 0; i < size; ++i) {
@@ -608,15 +603,16 @@ public class NamedNodeMapImpl
         in.defaultReadObject();
         if (nodes != null) {
             // cast to Vector is required
-            nodes = new ArrayList((Vector)nodes);
+            nodes = new ArrayList<>((Vector)nodes);
         }
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-        List oldNodes = this.nodes;
+        List<Node> oldNodes = this.nodes;
         try {
             if (oldNodes != null) {
-                this.nodes = new Vector(oldNodes);
+                // convert to Vector for backward-compatibility
+                this.nodes = new Vector<>(oldNodes);
             }
             out.defaultWriteObject();
         }
