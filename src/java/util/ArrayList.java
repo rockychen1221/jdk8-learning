@@ -495,17 +495,17 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public E remove(int index) {
-        rangeCheck(index);
+        rangeCheck(index);//检查删除下标是否越界
 
         modCount++;
-        E oldValue = elementData(index);
+        E oldValue = elementData(index); //被删除的值
 
-        int numMoved = size - index - 1;
+        int numMoved = size - index - 1; // 复制的长度，当index = 数组的最大下标时，不进行复制
         if (numMoved > 0)
             System.arraycopy(elementData, index+1, elementData, index,
                              numMoved);
         elementData[--size] = null; // clear to let GC do its work
-
+        // 数组还是原来的长度，只是size数量减少了，此方法一次只能删除一个元素
         return oldValue;
     }
 
