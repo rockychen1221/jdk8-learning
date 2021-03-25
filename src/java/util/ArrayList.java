@@ -878,7 +878,7 @@ public class ArrayList<E> extends AbstractList<E>
                 ArrayList.this.remove(lastRet);
                 cursor = lastRet;
                 lastRet = -1;
-                expectedModCount = modCount;
+                expectedModCount = modCount; //更新操作次数，同步
             } catch (IndexOutOfBoundsException ex) {
                 throw new ConcurrentModificationException();
             }

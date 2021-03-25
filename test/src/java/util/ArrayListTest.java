@@ -3,9 +3,7 @@ package src.java.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * ArrayList Tester.
@@ -20,6 +18,7 @@ public class ArrayListTest {
 
     /**
      * 返回自定义的3个长度list
+     *
      * @return
      */
     private ArrayList<String> generateList() {
@@ -104,6 +103,85 @@ public class ArrayListTest {
     }
 
     /**
+     * copy原理
+     * 注意源数组下标不要越界
+     */
+    @Test
+    public void copyOfTest() {
+        String[] a = new String[]{"a", "b", "c", "d", "e", "f"};
+        String[] b = new String[]{"1", "2", "3"};
+        System.arraycopy(a, 2, b, 0, 3);
+        Arrays.asList(a).forEach(System.out::println);
+        System.out.println("=======");
+        Arrays.asList(b).forEach(System.out::println);
+    }
+
+    /**
+     * java.lang.IllegalStateException (迭代删除前必须先调用next())
+     */
+    @Test
+    public void iteratorTest() {
+        ArrayList list = generateList();
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()) {
+            iterator.next(); // 删除前必须调用next()
+            iterator.remove();
+            break;
+        }
+        Assert.assertEquals(list.size(), 2);
+
+        Iterator iterator2 = list.iterator();
+
+        System.out.println(iterator2.next());
+
+        System.out.println("==========");
+
+        iterator2.forEachRemaining(l -> {
+            System.out.println(l);
+        });
+    }
+
+    @Test
+    public void listIteratorTest() {
+        ArrayList list = generateList();
+        ListIterator listIterator = list.listIterator();
+        while (listIterator.hasNext() || listIterator.hasPrevious()) {
+            System.out.println(listIterator.nextIndex());
+            listIterator.next(); // 删除前必须调用next()
+            listIterator.remove();
+            break;
+        }
+        Assert.assertEquals(list.size(), 2);
+    }
+
+
+    /**
+     * java.lang.ConcurrentModificationException
+     * 为什么在remove后还会调用next() ???
+     */
+    @Test
+    public void forRemoveTest() {
+        ArrayList<String> list = generateList();
+        for (int i = 0; i < list.size(); i++) {
+            if (i == 1) {
+                list.remove(i);
+            }
+        }
+        list.forEach(System.out::println);
+
+        System.out.println("=======");
+
+        for (String s : list) {
+            System.out.println(s);
+            if ("33".equals(s)) {
+                list.remove(s);
+            }
+        }
+        //list.forEach(System.out::println);
+
+    }
+
+    /**
      * list 清空掉未被利用的空间
      */
     @Test
@@ -114,7 +192,9 @@ public class ArrayListTest {
         list.trimToSize();
     }
 
-
+    /**
+     * 带参数的toArray() ???
+     */
     @Test
     public void toArrayTest() {
         ArrayList list = generateList();
@@ -135,9 +215,9 @@ public class ArrayListTest {
      * 其他测试 set/indexOf/...
      */
     @Test
-    public void otherTest(){
+    public void otherTest() {
         ArrayList list = generateList();
-        list.set(1,"set");
+        list.set(1, "set");
     }
 
 
