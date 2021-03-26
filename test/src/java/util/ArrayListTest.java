@@ -154,6 +154,12 @@ public class ArrayListTest {
         Assert.assertEquals(list.size(), 2);
     }
 
+    @Test
+    public void spliteratorTest() {
+        ArrayList list = generateList();
+        list.spliterator();
+    }
+
 
     /**
      * java.lang.ConcurrentModificationException
@@ -212,12 +218,37 @@ public class ArrayListTest {
     }
 
     /**
+     * subList 会生成新的list吗
+     */
+    @Test
+    public void subListTest() {
+        ArrayList list = generateList();
+        List subList = list.subList(0, 2);
+        subList.forEach(System.out::println);
+        System.out.println("======");
+        // 修改subList , list会变吗？
+        subList.set(0, "a");
+        subList.add(1, "z");
+        subList.forEach(System.out::println);
+        System.out.println("=======");
+        list.forEach(System.out::println);
+
+        System.out.println("修改原list,新增一个值");
+        list.add("44");
+        list.forEach(System.out::println);
+        System.out.println("=======");
+        subList.forEach(System.out::println);
+    }
+
+    /**
      * 其他测试 set/indexOf/...
      */
     @Test
     public void otherTest() {
         ArrayList list = generateList();
         list.set(1, "set");
+
+        Assert.assertTrue(list.contains("33"));
     }
 
 

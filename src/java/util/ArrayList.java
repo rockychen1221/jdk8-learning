@@ -1097,10 +1097,10 @@ public class ArrayList<E> extends AbstractList<E>
             return listIterator();
         }
 
-        public ListIterator<E> listIterator(final int index) {
+        public ListIterator<E> listIterator(final int index) { // index == 0
             checkForComodification();
             rangeCheckForAdd(index);
-            final int offset = this.offset;
+            final int offset = this.offset; //开始下标
 
             return new ListIterator<E>() {
                 int cursor = index;
