@@ -2,7 +2,9 @@ package src.java.util;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 /**
  * LinkedList Tester.
@@ -34,6 +36,7 @@ public class LinkedListTest {
     public void initListTest() {
         // 初始大小
         LinkedList list = new LinkedList();
+        list.add("1");
         System.out.println(list.size());
 
         //
@@ -41,8 +44,23 @@ public class LinkedListTest {
         System.out.println(list3.size());
         list3.add("11");
         System.out.println(list3.size());
-
     }
 
+    /**
+     * 查询效率快慢原理
+     */
+    @Test
+    public void getTest(){
+        LinkedList list = generateList();
+        System.out.println(list.get(0));
+        System.out.println(list.get(2));
+
+        list.contains("1"); //全搜索
+    }
+
+    public void removeTest(){
+        LinkedList list = generateList();
+        list.remove();
+    }
 
 }

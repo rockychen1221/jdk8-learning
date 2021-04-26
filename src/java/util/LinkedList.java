@@ -141,7 +141,7 @@ public class LinkedList<E>
         final Node<E> l = last;
         final Node<E> newNode = new Node<>(l, e, null);
         last = newNode;
-        if (l == null)
+        if (l == null) // 说明是第一次添加
             first = newNode;
         else
             l.next = newNode;
@@ -566,7 +566,7 @@ public class LinkedList<E>
     Node<E> node(int index) {
         // assert isElementIndex(index);
 
-        if (index < (size >> 1)) {
+        if (index < (size >> 1)) { //二分查找
             Node<E> x = first;
             for (int i = 0; i < index; i++)
                 x = x.next;

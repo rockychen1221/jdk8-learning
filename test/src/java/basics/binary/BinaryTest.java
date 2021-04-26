@@ -1,4 +1,4 @@
-package src.java.binary;
+package src.java.basics.binary;
 
 
 /**
@@ -11,7 +11,9 @@ public class BinaryTest {
 
     public static void main(String[] args) {
         System.out.println(-15 >> 1);
-        System.out.println(1 >> 1);
+        System.out.println(3 >> 1);
+        System.out.println(1 << 4);
+        System.out.println(1 << 30);
         System.out.println(Integer.toBinaryString(9));
         System.out.println(Integer.toBinaryString(8));
         System.out.println(Integer.toBinaryString(7));
