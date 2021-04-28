@@ -47,6 +47,9 @@ public class ArrayListTest {
         list1.add("11");
         list1.add("22");
         System.out.println(list1.size());
+
+        ArrayList listMax = new ArrayList(Integer.MAX_VALUE - 1000000000);
+        System.out.println(listMax.size());
     }
 
     @Test
