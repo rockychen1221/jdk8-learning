@@ -27,11 +27,20 @@ public class HashMapTest {
     }
 
     @Test
-    public void initMap(){
+    public void initMap() {
         HashMap map = new HashMap();
 
-
         HashMap map3 = generateMap();
+    }
+
+    @Test
+    public void addTest() {
+        HashMap map = generateMap();
+        map.put("1", "111");
+
+        map.forEach((k, v) -> {
+            System.out.println(k + " " + v);
+        });
 
     }
 
