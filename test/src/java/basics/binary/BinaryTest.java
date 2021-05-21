@@ -5,6 +5,7 @@ import org.junit.Test;
 
 /**
  * 二进制算法位运算
+ * https://www.cnblogs.com/xiaokang01/p/9651366.html
  *
  * @author rockychen
  * @version 1.0
@@ -15,6 +16,7 @@ public class BinaryTest {
     public static void main(String[] args) {
         System.out.println(-15 >> 1);
         System.out.println(3 >> 1);
+        System.out.println(0 >>> 16);
         System.out.println(1 << 4);
         System.out.println(1 << 30);
         System.out.println(Integer.toBinaryString(9));
