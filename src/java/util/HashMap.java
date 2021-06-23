@@ -625,7 +625,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                    boolean evict) {
         Node<K,V>[] tab; Node<K,V> p; int n, i;
-        if ((tab = table) == null || (n = tab.length) == 0)
+        if ((tab = table) == null || (n = tab.length) == 0) // 如果当前没有元素为null时，扩容
             n = (tab = resize()).length;
         if ((p = tab[i = (n - 1) & hash]) == null)
             tab[i] = newNode(hash, key, value, null);
@@ -676,8 +676,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     final Node<K,V>[] resize() {
         Node<K,V>[] oldTab = table;
-        int oldCap = (oldTab == null) ? 0 : oldTab.length;
-        int oldThr = threshold;
+        int oldCap = (oldTab == null) ? 0 : oldTab.length; // 旧的长度
+        int oldThr = threshold;  // 0
         int newCap, newThr = 0;
         if (oldCap > 0) {
             if (oldCap >= MAXIMUM_CAPACITY) {
@@ -690,9 +690,9 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         }
         else if (oldThr > 0) // initial capacity was placed in threshold
             newCap = oldThr;
-        else {               // zero initial threshold signifies using defaults
+        else {               // zero initial threshold signifies using defaults  初始化默认大小 16  rockychen
             newCap = DEFAULT_INITIAL_CAPACITY;
-            newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
+            newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);  // 0.75f * 16
         }
         if (newThr == 0) {
             float ft = (float)newCap * loadFactor;
